@@ -9,19 +9,21 @@ interface User {
 }
 
 interface AuthContextType {
+  isServerDown: boolean;
   isLoading: boolean;
   isAuthenticated: boolean;
+  setIsServerDown: (value: boolean) => void;
   setIsLoading: (value: boolean) => void;
-  login: (userData: User) => AxiosResponse<any, any>;
-  register: (userData: User) => AxiosResponse<any, any>;
+  login: (userData: User) => Promise<AxiosResponse<any, any>>;
+  register: (userData: User) => Promise<AxiosResponse<any, any>>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [isServerDown, setIsServerDown] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  // { name: "John Doe" }
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
 
   useEffect(() => {
@@ -29,6 +31,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       // Simulate fetching user data based on the token
       setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
     }
   }, []);
 
@@ -53,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoading, isAuthenticated, setIsLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ isServerDown, isLoading, isAuthenticated, setIsServerDown, setIsLoading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
