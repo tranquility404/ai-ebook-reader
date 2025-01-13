@@ -19,7 +19,7 @@ interface Book {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {books.map((book) => (
-          <a href={`/books/${book.id}`} key={book.id} className="group relative">
+          <a href={`/book/${book.id}`} key={book.id} className="group relative">
           <div key={book.id} className="relative">
             <div className="aspect-[3/4] relative overflow-hidden rounded-lg shadow-lg">
               <img

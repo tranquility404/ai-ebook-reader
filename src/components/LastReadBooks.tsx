@@ -18,7 +18,7 @@ export default function LastReadBooks({ books, emptyText }: LastReadBooksProps) 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
       {books.map((book) => (
-        <a href={`/read-book/${book.id}`} key={book.id} className="group relative">
+        <a href={`/book/${book.id}/read-book`} key={book.id} className="group relative">
           <div key={book.id} className="relative">
             <div className="aspect-[3/4] relative overflow-hidden rounded-lg shadow-lg">
               <img
@@ -32,7 +32,7 @@ export default function LastReadBooks({ books, emptyText }: LastReadBooksProps) 
                   <div className="mt-2">
                     <div className="w-full bg-gray-200/30 rounded-full h-1.5">
                       <div
-                        className="bg-secondary h-1.5 rounded-full"
+                        className="bg-accent h-1.5 rounded-full"
                         style={{ width: `${book.progress}%` }}
                       />
                     </div>

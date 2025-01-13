@@ -114,14 +114,14 @@ function BookPage({ bookId }: { bookId: string }) {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <Button className="h-auto p-0" variant="outline">
-            <a href={`/read-book/${bookId}`} className="w-full h-full py-6">
+            <a href={`${bookId}/read-book`} className="w-full h-full py-6">
               <div className="flex flex-col items-center gap-2">
                 <BookOpen className="h-5 w-5" />
                 <span>Read Book</span>
               </div>
             </a>
             </Button>
-            <Button className="h-auto py-4" variant="outline">
+             {/*<Button className="h-auto py-4" variant="outline">
               <div className="flex flex-col items-center gap-2">
                 <FileText className="h-5 w-5" />
                 <span>Read Summary</span>
@@ -138,12 +138,14 @@ function BookPage({ bookId }: { bookId: string }) {
                 <HelpCircle className="h-5 w-5" />
                 <span>Try Quiz</span>
               </div>
-            </Button>
-            <Button className="h-auto py-4" variant="outline">
+            </Button> */}
+            <Button className="h-auto p-0" variant="outline">
+            <a href={`${bookId}/chapter`} className="w-full h-full py-6">
               <div className="flex flex-col items-center gap-2">
                 <List className="h-5 w-5" />
                 <span>View Chapter List</span>
               </div>
+              </a>
             </Button>
             <Button className="h-auto py-4" variant="outline">
               <div className="flex flex-col items-center gap-2">
@@ -183,11 +185,11 @@ function BookPage({ bookId }: { bookId: string }) {
 };
 
 export default function BookPageWrapper() {
-  const { id } = useParams()
+  const { bookId } = useParams()
 
   return (
     <BookDataProvider>
-      <BookPage bookId={id} />
+      <BookPage bookId={bookId} />
     </BookDataProvider>
   )
 }

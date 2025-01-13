@@ -25,7 +25,7 @@ function ReadBook({ bookId }: { bookId: string }) {
   const [book, setBook] = useState<BookInfo>()
   const [location, setLocation] = useState<string | number>(0)
   const [totalPages, setTotalPages] = useState(0)
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
   const [fontSize, setFontSize] = useState(100)
   const [selectedText, setSelectedText] = useState('')
   const [showAIOptions, setShowAIOptions] = useState(false)
@@ -204,10 +204,11 @@ function ReadBook({ bookId }: { bookId: string }) {
 
             rendition.on('relocated', (location: any) => {
               if (tocRef.current) { 
-                const pageIdx = tocRef.current[location.start.href] + 1
-                setCurrentPage(pageIdx)
-                if (!isNaN(pageIdx))
-                  updateReadHistory(pageIdx-1)
+                let pageIdx = tocRef.current[location.start.href]
+                if (!isNaN(pageIdx)) {
+                  updateReadHistory(pageIdx)
+                  setCurrentPage(pageIdx + 1)
+                }
               }
             })
           }}
@@ -268,11 +269,11 @@ function ReadBook({ bookId }: { bookId: string }) {
 }
 
 export default function ReadBookWrapper() {
-  const { id } = useParams()
+  const { bookId } = useParams()
 
   return (
     <BookDataProvider>
-      <ReadBook bookId={id} />
+      <ReadBook bookId={bookId} />
     </BookDataProvider>
 )
 }
