@@ -48,10 +48,12 @@ export default function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
+                <a href='/profile'>
               <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
               </DropdownMenuItem>
+                </a>
               <DropdownMenuItem>
                 <BookOpen className="mr-2 h-4 w-4" />
                 <span>My Collection</span>

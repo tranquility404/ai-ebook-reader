@@ -35,7 +35,7 @@ export default function RootLayout({
 }
 
 function AuthWrapper({ children }: { children: React.ReactNode }) {
-  const { isServerDown, isLoading, isAuthenticated, setIsLoading, setIsServerDown } = useAuth();
+  const { isLoading, isAuthenticated, setIsLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -49,7 +49,6 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error('Error during health check:', error)
-        setIsServerDown(true)
       } finally {
         setIsLoading(false)
       }
@@ -69,5 +68,5 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
   //   return null;
   // }
 
-  return <>{isLoading || isServerDown ? <LoadingScreen isServerDown /> : children}</>;
+  return <>{isLoading ? <LoadingScreen /> : children}</>;
 }

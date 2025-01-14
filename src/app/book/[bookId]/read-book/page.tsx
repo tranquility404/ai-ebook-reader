@@ -1,46 +1,30 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import dynamic from 'next/dynamic'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Volume2, Plus, Minus, Moon, Sun, Maximize, Minimize, Copy, FileText, HelpCircle, MessageCircle } from 'lucide-react'
-import { Button } from "@/components/ui/button"
 import ProgressUI from '@/components/ProgressUI'
-import AIOptionsPopup from '@/components/AIOptionsPopup'
-import AIResponseDialog from '@/components/AIResponseDialog'
-import Chatbot from '@/components/Chatbot'
-import { useParams } from 'next/navigation'
+import { Button } from "@/components/ui/button"
 import { BookDataProvider, BookInfo, useBookData } from '@/lib/bookDataContext'
 import apiClient from '@/utils/apiClient'
+import { Maximize, Minimize, Minus, Moon, Plus, Sun, Volume2 } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import { useParams } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
 
 const ReactReader = dynamic(() => import('react-reader').then((mod) => mod.ReactReader), { ssr: false })
 
-// Mock book URL (replace with actual data fetching logic)
-const mockBook = "/path/to/mock.epub"
 
-// export default 
 function ReadBook({ bookId }: { bookId: string }) {
-  const { bookInfo, fetchBook } = useBookData()
+  const { fetchBook } = useBookData()
   const [book, setBook] = useState<BookInfo>()
   const [location, setLocation] = useState<string | number>(0)
   const [totalPages, setTotalPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [fontSize, setFontSize] = useState(100)
   const [selectedText, setSelectedText] = useState('')
-  const [showAIOptions, setShowAIOptions] = useState(false)
-  const [aiResponse, setAIResponse] = useState('')
-  const [showChatbot, setShowChatbot] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isFullScreen, setIsFullScreen] = useState(false)
   const renditionRef = useRef<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const tocRef = useRef<any>(null)
-
-  // const { data: bookUrl = mockBook, isLoading, error } = useQuery(['epub', params.id], () => 
-  //   // Replace with actual API call to fetch book URL
-  //   Promise.resolve(mockBook)
-  // )
 
   useEffect(() => {
     if (bookId) {
@@ -108,10 +92,6 @@ function ReadBook({ bookId }: { bookId: string }) {
   const speak = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text)
     window.speechSynthesis.speak(utterance)
-  }
-
-  const handleAIAction = (action: 'summarize' | 'explain') => {
-    setAIResponse(action === 'summarize' ? 'This is a summary of the selected text.' : 'This is an explanation of the selected text.')
   }
 
   const updateReadHistory = async (pageIdx: number) => {
@@ -189,15 +169,11 @@ function ReadBook({ bookId }: { bookId: string }) {
               const text = rendition.getRange(cfiRange).toString()
               if (text.length > 0) {
                 setSelectedText(text)
-                setShowAIOptions(true)
-              } else {
-                setShowAIOptions(false)
               }
 
               contents.document.addEventListener('mouseup', () => {
                 if (contents.window.getSelection()?.toString().length === 0) {
                   setSelectedText('')
-                  setShowAIOptions(false)
                 }
               })
             })
@@ -234,36 +210,6 @@ function ReadBook({ bookId }: { bookId: string }) {
 
       {/* Progress bar */}
       <ProgressUI currentPage={currentPage} totalPages={totalPages} isDarkMode={isDarkMode} />
-
-      {/* AI options popup */}
-      <AIOptionsPopup
-        showAIOptions={showAIOptions}
-        selectedText={selectedText}
-        isDarkMode={isDarkMode}
-        onCopy={() => navigator.clipboard.writeText(selectedText)}
-        onSummarize={() => handleAIAction('summarize')}
-        onExplain={() => handleAIAction('explain')}
-      />
-
-      {/* AI response dialog */}
-      <AIResponseDialog
-        aiResponse={aiResponse}
-        isDarkMode={isDarkMode}
-        onClose={() => setAIResponse('')}
-      />
-
-      {/* Chatbot toggle */}
-      <Button
-        variant="default"
-        size="icon"
-        className="fixed z-10 bottom-4 right-4 rounded-full shadow-lg"
-        onClick={() => setShowChatbot(!showChatbot)}
-      >
-        <MessageCircle className="h-4 w-4" />
-      </Button>
-
-      {/* Chatbot */}
-      <Chatbot show={showChatbot} isDarkMode={isDarkMode} />
     </div>
   )
 }
