@@ -50,7 +50,7 @@ export default function ProfilePage() {
     setIsSubmitting(true)
 
     try {
-      const response = await apiClient.post('/user/user-info', {
+      await apiClient.post('/user/user-info', {
         name: profile?.name,
         dob: profile?.dob,
         country: profile?.country

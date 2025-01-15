@@ -1,31 +1,28 @@
-interface Book {
-    id: string
-    title: string
-    // authors: string[]
-    genre: string
-    thumbnail: string
+import { Book } from "@/types/book"
+import Image from "next/image"
+
+interface CollectionBooksProps {
+  books: Book[]
+  emptyText: string
+}
+
+export default function CollectionBooks({ books, emptyText }: CollectionBooksProps) {
+  if (books.length === 0) {
+    return <p className="text-muted-foreground">{emptyText}</p>
   }
-  
-  interface CollectionBooksProps {
-    books: Book[]
-    emptyText: string
-  }
-  
-  export default function CollectionBooks({ books, emptyText }: CollectionBooksProps) {
-    if (books.length === 0) {
-      return <p className="text-muted-foreground">{emptyText}</p>
-    }
-  
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {books.map((book) => (
-          <a href={`/book/${book.id}`} key={book.id} className="group relative">
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      {books.map((book) => (
+        <a href={`/book/${book.id}`} key={book.id} className="group relative">
           <div key={book.id} className="relative">
             <div className="aspect-[3/4] relative overflow-hidden rounded-lg shadow-lg">
-              <img
+              <Image
                 src={book.thumbnail}
                 alt={book.title}
                 className="object-cover w-full h-full"
+                layout="fill"
+                objectFit="cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                 <div className="absolute inset-x-0 bottom-0 p-3">
@@ -38,10 +35,9 @@ interface Book {
               </div>
             </div>
           </div>
-          </a>
-        ))}
-      </div>
-    )
-  }
-  
-  
+        </a>
+      ))}
+    </div>
+  )
+}
+

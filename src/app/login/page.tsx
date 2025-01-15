@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Eye, EyeOff, Github, Mail } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { Eye, EyeOff, Github, Mail } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -119,7 +119,7 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
-          Don't have an account?{' '}
+          Don't have an account?
           <Link href="/register" className="text-primary hover:underline">
             Sign up
           </Link>

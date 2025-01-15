@@ -1,6 +1,5 @@
 'use client'
 
-import ErrorBoundary from '@/components/ErrorBoundary'
 import LoadingScreen from '@/components/LoadingScreen'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
 import apiClient from '@/utils/apiClient'
@@ -24,9 +23,7 @@ export default function RootLayout({
       <body className=''>
         <AuthProvider>
           <AuthWrapper>
-            <ErrorBoundary>
-              {children}
-            </ErrorBoundary>
+            {children}
           </AuthWrapper>
         </AuthProvider>
       </body>

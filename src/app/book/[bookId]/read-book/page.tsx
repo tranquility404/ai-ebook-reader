@@ -2,7 +2,7 @@
 
 import ProgressUI from '@/components/ProgressUI'
 import { Button } from "@/components/ui/button"
-import { BookDataProvider, BookInfo, useBookData } from '@/lib/bookDataContext'
+import { BookInfo } from '@/types/bookInfo'
 import apiClient from '@/utils/apiClient'
 import { Maximize, Minimize, Minus, Moon, Plus, Sun, Volume2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
@@ -11,9 +11,8 @@ import { useEffect, useRef, useState } from 'react'
 
 const ReactReader = dynamic(() => import('react-reader').then((mod) => mod.ReactReader), { ssr: false })
 
-
-function ReadBook({ bookId }: { bookId: string }) {
-  const { fetchBook } = useBookData()
+export default function ReadBook() {
+  const { bookId } = useParams()
   const [book, setBook] = useState<BookInfo>()
   const [location, setLocation] = useState<string | number>(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -28,10 +27,20 @@ function ReadBook({ bookId }: { bookId: string }) {
   const pageIndex = useRef<number>(0)
 
   useEffect(() => {
-    if (bookId) {
-      fetchBook(bookId).then((data) => {
+    const fetchBook = async (bookId: string) => {
+      if (bookId === null || bookId.length === 0) return
+  
+      try {
+        const response = await apiClient.get(`/book/${bookId}`)
+        const data = await response.data
         setBook(data)
-      })
+      } catch (error) {
+        console.error('Error fetching book:', error)
+      }
+    }
+
+    if (bookId) {
+      fetchBook(bookId)
     }
 
     const id = setInterval(() => {
@@ -189,7 +198,7 @@ function ReadBook({ bookId }: { bookId: string }) {
 
             rendition.on('relocated', (location: any) => {
               if (tocRef.current) { 
-                let pageIdx = tocRef.current[location.start.href]
+                const pageIdx = tocRef.current[location.start.href]
                 if (!isNaN(pageIdx)) {
                   pageIndex.current = pageIdx
                   setCurrentPage(pageIdx + 1)
@@ -200,7 +209,7 @@ function ReadBook({ bookId }: { bookId: string }) {
           tocChanged={toc => {
             if (tocRef.current) return
 
-            let dict = {}
+            const dict = {}
             let idx = 0
             for (const item of toc) {
               dict[item.href] = idx
@@ -221,15 +230,5 @@ function ReadBook({ bookId }: { bookId: string }) {
       <ProgressUI currentPage={currentPage} totalPages={totalPages} isDarkMode={isDarkMode} />
     </div>
   )
-}
-
-export default function ReadBookWrapper() {
-  const { bookId } = useParams()
-
-  return (
-    <BookDataProvider>
-      <ReadBook bookId={bookId} />
-    </BookDataProvider>
-)
 }
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Search } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import apiClient from '@/utils/apiClient'
+import { Book } from '@/types/book'
 
 export default function SearchPage() {
     const searchParams = useSearchParams()
@@ -52,7 +53,7 @@ export default function SearchPage() {
                 </form>
 
                 <div className="grid gap-6">
-                    {searchResults.map((book: any) => (
+                    {searchResults.map((book: Book) => (
                         <a href={`/book/${book.id}`} key={book.id} className="group relative">
                             <div key={book.id} className="flex gap-4 p-4 border rounded-lg">
                                 <img

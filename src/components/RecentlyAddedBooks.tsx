@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 interface Book {
     id: string
     title: string
@@ -22,10 +24,12 @@ export default function RecentlyAddedBooks({ books, emptyText }: RecentlyAddedBo
                 <a href={`/book/${book.id}`} key={book.id} className="group relative">
                     <div key={book.id} className="relative group">
                         <div className="aspect-[3/4] relative overflow-hidden rounded-lg shadow-lg">
-                            <img
+                            <Image
                                 src={book.thumbnail}
                                 alt={book.title}
                                 className="object-cover w-full h-full"
+                                layout="fill"
+                                objectFit="cover"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
                                 <div className="absolute inset-x-0 bottom-0 p-3">

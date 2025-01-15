@@ -11,8 +11,8 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   setIsLoading: (value: boolean) => void;
-  login: (userData: User) => Promise<AxiosResponse<any, any>>;
-  register: (userData: User) => Promise<AxiosResponse<any, any>>;
+  login: (userData: User) => void;
+  register: (userData: User) => void;
   logout: () => void;
 }
 
@@ -31,12 +31,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const register = (userData: User) => {
-    return authenticate("/auth/register", userData)
+  const register = async (userData: User) => {
+    return await authenticate("/auth/register", userData)
   };
 
-  const login = (userData: User) => {
-    return authenticate("/auth/login", userData)
+  const login = async (userData: User) => {
+    return await authenticate("/auth/login", userData)
   };
 
   const authenticate = async (url: string, userData: User) => {

@@ -14,7 +14,7 @@ export const MLProvider = ({ children }: { children: ReactNode }) => {
 
     const checkServer = async () => {
         try {
-          const res = await apiClient.get("/ml/health-check");
+          await apiClient.get("/ml/health-check");
           setIsLoading(false);
         } catch (error) {
           console.log(error.message);

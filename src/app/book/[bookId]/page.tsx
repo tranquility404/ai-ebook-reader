@@ -2,8 +2,9 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { BookDataProvider, BookInfo, useBookData } from "@/lib/bookDataContext"
-import { Book, BookOpen, FileText, Flag, HelpCircle, List, ThumbsUp } from 'lucide-react'
+import { BookInfo } from "@/types/bookInfo"
+import apiClient from "@/utils/apiClient"
+import { BookOpen, Flag, List, ThumbsUp } from 'lucide-react'
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -14,36 +15,25 @@ interface SimilarBook {
   thumbnail: string
 }
 
-// export default 
-function BookPage({ bookId }: { bookId: string }) {
-  const { fetchBook } = useBookData()
-  // const { bookInfo } = useBookUILogic(bookId)
+export default function BookPage() {
+  const { bookId } = useParams()
   const [book, setBook] = useState<BookInfo | null>()
 
   useEffect(() => {
+    const fetchBook = async (bookId: string) => {
+      if (bookId === null || bookId.length === 0) return
+  
+      try {
+        const response = await apiClient.get(`/book/${bookId}`)
+        const data = await response.data
+        setBook(data)
+      } catch (error) {
+        console.error('Error fetching book:', error)
+      }
+    }
 
-    fetchBook(bookId).then((res) => {
-      console.log('bookInfo', res);
-      
-      setBook(res)
-    })
+    fetchBook(bookId)
   } , []);
-
-  // Replace with actual data fetching
-  // const book: BookDetails = {
-  //   id: '1',
-  //   title: 'The Great Gatsby',
-  //   description: 'A vivid and captivating story of wealth, love, and the American Dream in the Roaring Twenties.',
-  //   thumbnail: '/placeholder.svg',
-  //   authors: ['F. Scott Fitzgerald'],
-  //   genre: 'Classic Literature',
-  //   publisher: 'Scribner',
-  //   publishedDate: '1925-04-10',
-  //   pageCount: 180,
-  //   maturityRating: 'Teen',
-  //   likes: 1234,
-  //   postedBy: 'John Doe'
-  // }
 
   const similarBooks: SimilarBook[] = [
     { id: '2', title: 'To Kill a Mockingbird', thumbnail: '/placeholder.svg' },
@@ -183,14 +173,3 @@ function BookPage({ bookId }: { bookId: string }) {
     </div>
   )
 };
-
-export default function BookPageWrapper() {
-  const { bookId } = useParams()
-
-  return (
-    <BookDataProvider>
-      <BookPage bookId={bookId} />
-    </BookDataProvider>
-  )
-}
-

@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Upload } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function UploadButton() {
   const [isUploading, setIsUploading] = useState(false)
@@ -17,17 +17,6 @@ export default function UploadButton() {
         alert('Please select a valid EPUB file')
       }
     }
-
-  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      setIsUploading(true)
-      // TODO: Implement file upload logic here
-      console.log('Uploading file:', file.name)
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulating upload
-      setIsUploading(false)
-    }
-  }
 
   return (
     <div>

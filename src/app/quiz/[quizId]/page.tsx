@@ -1,24 +1,22 @@
 'use client'
 
+import QuizTimer from "@/components/QuizTimer"
 import { Button } from "@/components/ui/button"
 import { CollapsibleSidebar } from '@/components/ui/collabsible-sidebar'
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { cn } from "@/lib/utils"
-import { QuizQuestion } from '@/types/quiz_question'
-import apiClient from '@/utils/apiClient'
-import { useParams, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
-import confetti from 'canvas-confetti'
-import QuizTimer from "@/components/QuizTimer"
 import { SidebarProvider, useSidebar } from '@/components/ui/sidebar'
-import { error } from "console"
+import { cn } from "@/lib/utils"
+import { QuizQuestion } from '@/types/quiz_question'
+import apiClient from '@/utils/apiClient'
+import confetti from 'canvas-confetti'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 interface QuestionState {
   answered: boolean
@@ -56,7 +54,7 @@ function QuizContent() {
         setQuestions(quizJson)
 
       } catch (error) {
-        console.error('Error:', error)
+        console.error(error.response.message)
       }
     }
 
@@ -98,7 +96,7 @@ function QuizContent() {
   
   const updateTestHistory = (score) => {
     try {
-      const res = apiClient.post("/book/update-quiz-test-history", {
+      apiClient.post("/book/update-quiz-test-history", {
         "testId": quizId,
         "score": score
       })
