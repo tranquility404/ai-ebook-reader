@@ -58,7 +58,7 @@ export default function ChapterPage() {
         const filtered = fetchedChapters.filter((ch, idx, self) => idx == self.findIndex(obj => obj.uid == ch.uid) && ch.noOfWords > 300)
         setChapters(filtered)
       } catch (error) {
-        console.error('Error:', error)
+        console.error('Error:', error.response.message)
       }
     };
 
