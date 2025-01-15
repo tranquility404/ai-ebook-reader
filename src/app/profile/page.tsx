@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useToast } from "@/components/ui/use-toast"
 import apiClient from '@/utils/apiClient'
 import { Pencil } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -26,7 +25,6 @@ interface UserProfile {
 }
 
 export default function ProfilePage() {
-  const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [profile, setProfile] = useState<UserProfile>()
@@ -55,19 +53,9 @@ export default function ProfilePage() {
         dob: profile?.dob,
         country: profile?.country
       });
-
-      toast({
-        title: "Profile updated",
-        description: "Your profile has been successfully updated.",
-      })
-      
       setIsEditing(false)
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      })
+      console.log(error);
     } finally {
       setIsSubmitting(false)
     }

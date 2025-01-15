@@ -52,7 +52,7 @@ function AuthWrapper({ children }: { children: React.ReactNode }) {
     }
 
     healthCheck()
-  }, [])
+  })
 
   useEffect(() => {
     if (!isAuthenticated) {

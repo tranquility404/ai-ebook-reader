@@ -13,4 +13,8 @@ const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
 ];
 
-export default eslintConfig;
+export default eslintConfig
+//  = {
+//   reportUnusedDisableDirectives: "warn",
+//   ignorePatterns: ["src/components/ui/*", "src/hooks/*"]
+// };

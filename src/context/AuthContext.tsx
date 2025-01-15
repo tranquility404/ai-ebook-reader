@@ -1,6 +1,5 @@
 import apiClient from "@/utils/apiClient";
-import { AxiosResponse } from "axios";
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 interface User {
   email: string;
