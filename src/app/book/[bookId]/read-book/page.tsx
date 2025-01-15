@@ -21,9 +21,9 @@ export default function ReadBook() {
   const [selectedText, setSelectedText] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isFullScreen, setIsFullScreen] = useState(false)
-  const renditionRef = useRef<any>(null)
+  const renditionRef = useRef(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const tocRef = useRef<any>(null)
+  const tocRef = useRef(null)
   const pageIndex = useRef<number>(0)
 
   useEffect(() => {
@@ -183,7 +183,7 @@ export default function ReadBook() {
               rendition.themes.select('dark')
             }
 
-            rendition.on('selected', (cfiRange: string, contents: any) => {
+            rendition.on('selected', (cfiRange: string, contents) => {
               const text = rendition.getRange(cfiRange).toString()
               if (text.length > 0) {
                 setSelectedText(text)
@@ -196,7 +196,7 @@ export default function ReadBook() {
               })
             })
 
-            rendition.on('relocated', (location: any) => {
+            rendition.on('relocated', (location) => {
               if (tocRef.current) { 
                 const pageIdx = tocRef.current[location.start.href]
                 if (!isNaN(pageIdx)) {

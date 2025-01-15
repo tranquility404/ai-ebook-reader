@@ -192,7 +192,7 @@ function QuizContent() {
           </div>
         </div>
       </CollapsibleSidebar>
-
+      
       <div className="flex-1 flex flex-col">
         <div className="border-b p-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Quiz</h1>
