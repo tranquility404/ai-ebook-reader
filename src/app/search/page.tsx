@@ -11,11 +11,11 @@ import { Book } from '@/types/book'
 export default function SearchPage() {
     const searchParams = useSearchParams()
     const query = searchParams.get('q');
-    const [searchQuery, setSearchQuery] = useState<string>(query)
+    const [searchQuery, setSearchQuery] = useState<string>(query as string)
     const [searchResults, setSearchResults] = useState([])
     const [isSearching, setIsSearching] = useState(true)
 
-    const handleSearch = async (e: React.FormEvent) => {
+    const handleSearch = async (e: React.FormEvent|null) => {
         if (e) e.preventDefault()
         setIsSearching(true)
 

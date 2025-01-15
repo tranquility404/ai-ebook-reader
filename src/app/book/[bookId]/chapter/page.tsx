@@ -13,6 +13,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { MLProvider, useMLServer } from '@/context/MLContext'
+import { ErrorMessage } from '@/types/error-message'
 import apiClient from '@/utils/apiClient'
 import { Book, Brain, FileText, HelpCircle } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
@@ -58,7 +59,7 @@ export default function ChapterPage() {
         const filtered = fetchedChapters.filter((ch, idx, self) => idx == self.findIndex(obj => obj.uid == ch.uid) && ch.noOfWords > 300)
         setChapters(filtered)
       } catch (error) {
-        console.error('Error:', error.response.message)
+        console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
       }
     };
 
@@ -88,7 +89,7 @@ export default function ChapterPage() {
       setSummaryText(response.data)
 
     } catch (error) {
-      console.error('Error:', error.response.message)
+        console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
     } finally {
       setIsGenerating(false)
     }
@@ -106,7 +107,7 @@ export default function ChapterPage() {
       const quizId = response.data.quizId
       router.push(`/quiz/${quizId}`)
     } catch (error) {
-      console.error('Error:', error.response.message)
+      console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
     } finally {
       setShowQuizDialog(false)
     }

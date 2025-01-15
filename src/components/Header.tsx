@@ -25,6 +25,7 @@ import { User, BookOpen, MessageSquare, LogOut, Sun, Moon } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useTheme } from 'next-themes'
 import apiClient from '@/utils/apiClient'
+import { ErrorMessage } from '@/types/error-message'
 
 export default function Header() {
   const { logout } = useAuth()
@@ -39,7 +40,7 @@ export default function Header() {
       const res = await apiClient.get("/user/profile-picture");
       setProfilePicCloudUrl(res.data)
       } catch(error) {
-        console.log(error.response.message);
+        console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
       }
     }
 

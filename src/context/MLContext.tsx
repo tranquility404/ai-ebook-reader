@@ -1,3 +1,4 @@
+import { ErrorMessage } from "@/types/error-message";
 import apiClient from "@/utils/apiClient";
 import { createContext, ReactNode, useContext, useState } from "react";
 
@@ -17,7 +18,7 @@ export const MLProvider = ({ children }: { children: ReactNode }) => {
           await apiClient.get("/ml/health-check");
           setIsLoading(false);
         } catch (error) {
-          console.log(error.message);
+          console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
         } finally {
           setIsLoading(false);
         }

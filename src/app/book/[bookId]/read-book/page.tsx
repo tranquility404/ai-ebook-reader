@@ -4,6 +4,7 @@ import ProgressUI from '@/components/ProgressUI'
 import { Button } from "@/components/ui/button"
 import { BookInfo } from '@/types/bookInfo'
 import apiClient from '@/utils/apiClient'
+import { Rendition, Contents, Location } from 'epubjs'
 import { Maximize, Minimize, Minus, Moon, Plus, Sun, Volume2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { useParams } from 'next/navigation'
@@ -21,9 +22,9 @@ export default function ReadBook() {
   const [selectedText, setSelectedText] = useState('')
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isFullScreen, setIsFullScreen] = useState(false)
-  const renditionRef = useRef(null)
+  const renditionRef = useRef<Rendition>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const tocRef = useRef(null)
+  const tocRef = useRef<{[x: string]: number}>({})
   const pageIndex = useRef<number>(0)
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function ReadBook() {
     }
 
     if (bookId) {
-      fetchBook(bookId)
+      fetchBook(bookId as string)
     }
 
     const id = setInterval(() => {
@@ -166,7 +167,7 @@ export default function ReadBook() {
       {/* Main content */}
       <div className="flex-1 h-full">
         <ReactReader
-          url={book?.cloudUrl}
+          url={book?.cloudUrl as string}
           location={location}
           locationChanged={(loc: string) => setLocation(loc)}
           getRendition={rendition => {
@@ -183,7 +184,7 @@ export default function ReadBook() {
               rendition.themes.select('dark')
             }
 
-            rendition.on('selected', (cfiRange: string, contents) => {
+            rendition.on('selected', (cfiRange: string, contents: Contents) => {
               const text = rendition.getRange(cfiRange).toString()
               if (text.length > 0) {
                 setSelectedText(text)
@@ -196,7 +197,7 @@ export default function ReadBook() {
               })
             })
 
-            rendition.on('relocated', (location) => {
+            rendition.on('relocated', (location: Location) => {
               if (tocRef.current) { 
                 const pageIdx = tocRef.current[location.start.href]
                 if (!isNaN(pageIdx)) {
@@ -209,7 +210,7 @@ export default function ReadBook() {
           tocChanged={toc => {
             if (tocRef.current) return
 
-            const dict = {}
+            const dict: {[x: string]: number} = {}
             let idx = 0
             for (const item of toc) {
               dict[item.href] = idx

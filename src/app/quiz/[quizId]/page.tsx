@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sheet"
 import { SidebarProvider, useSidebar } from '@/components/ui/sidebar'
 import { cn } from "@/lib/utils"
+import { ErrorMessage } from "@/types/error-message"
 import { QuizQuestion } from '@/types/quiz_question'
 import apiClient from '@/utils/apiClient'
 import confetti from 'canvas-confetti'
@@ -42,7 +43,7 @@ function QuizContent() {
   const [showScore, setShowScore] = useState(false)
   const [isReviewMode, setIsReviewMode] = useState(false)
   const [score, setScore] = useState({ total: 0, correct: 0, incorrect: 0 })
-  const [questions, setQuestions] = useState<QuizQuestion[]>();
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [questionStates, setQuestionStates] = useState<{ [key: number]: QuestionState }>({})
 
@@ -54,7 +55,7 @@ function QuizContent() {
         setQuestions(quizJson)
 
       } catch (error) {
-        console.error(error.response.message)
+        console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
       }
     }
 
@@ -71,7 +72,7 @@ function QuizContent() {
         }
       }))
     }
-    setCurrentQuestionIndex(prev => Math.min(questions.length - 1, prev + 1))
+    setCurrentQuestionIndex(prev => Math.min(questions?.length - 1, prev + 1))
   }
 
   const handleQuestionSelect = (index: number) => {
@@ -94,7 +95,7 @@ function QuizContent() {
   }
 
   
-  const updateTestHistory = (score) => {
+  const updateTestHistory = (score: number) => {
     try {
       apiClient.post("/book/update-quiz-test-history", {
         "testId": quizId,
@@ -102,13 +103,15 @@ function QuizContent() {
       })
 
     } catch (error) {
-      console.error(error.response.message);
+      console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
     }
   }
 
   const calculateScore = () => {
     let correct = 0
     let incorrect = 0
+
+    if (questions == undefined) return;
 
     Object.entries(questionStates).forEach(([index, state]) => {
       if (state.selectedOption === questions[Number(index)].correctId) {
@@ -192,7 +195,7 @@ function QuizContent() {
           </div>
         </div>
       </CollapsibleSidebar>
-      
+
       <div className="flex-1 flex flex-col">
         <div className="border-b p-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Quiz</h1>

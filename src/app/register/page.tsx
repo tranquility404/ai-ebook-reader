@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { ErrorMessage } from '@/types/error-message'
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('')
@@ -25,15 +26,10 @@ export default function RegisterPage() {
       return
     }
     try {
-      const response = register({ email, password })
-      if (response.status === 200) {
-        router.push('/login')
-      } else {
-        // Handle registration error
-        console.error('Registration failed')
-      }
+      register({ email, password })
+      router.push('/login')
     } catch (error) {
-      console.error('Error during registration:', error)
+      console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
     }
   }
 

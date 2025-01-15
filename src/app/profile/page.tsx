@@ -12,9 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { ErrorMessage } from "@/types/error-message"
 import apiClient from '@/utils/apiClient'
 import { Pencil } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { Ref, RefObject, useEffect, useRef, useState } from 'react'
 
 interface UserProfile {
   profilePicCloudUrl: string
@@ -28,14 +29,14 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [profile, setProfile] = useState<UserProfile>()
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<RefObject<Ref<HTMLInputElement>>>(null);
 
   const fetchUserInfo = async () => {
     try {
       const res = await apiClient.get("/user/user-info");
       setProfile(res.data)
     } catch(error) {
-      console.log(error.response.message);
+      console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
     }
   }
 
@@ -74,9 +75,9 @@ export default function ProfilePage() {
         });
 
         const url = uploadResponse.data;
-        setProfile({ ...profile, profilePicCloudUrl: url })
+        setProfile({ ...profile, profilePicCloudUrl: url } as UserProfile)
       } catch (error) {
-        console.error('Error:', error.response.data.message)
+        console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
       }
     }
   }
@@ -119,13 +120,13 @@ export default function ProfilePage() {
                     className="absolute bottom-0 right-0 rounded-full"
                     type="button"
                     onClick={() => {
-                      if (fileInputRef.current)
+                      if (fileInputRef.current instanceof HTMLInputElement)
                         fileInputRef.current.click()
                     }}
                   >
                       <Pencil className="h-4 w-4" />
                       <input
-                        ref={fileInputRef}
+                        ref={fileInputRef as Ref<HTMLInputElement>}
                         type="file"
                         id="file-upload"
                         className="hidden"

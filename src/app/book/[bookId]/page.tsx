@@ -32,7 +32,7 @@ export default function BookPage() {
       }
     }
 
-    fetchBook(bookId)
+    fetchBook(bookId as string)
   } , []);
 
   const similarBooks: SimilarBook[] = [

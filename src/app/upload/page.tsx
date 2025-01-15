@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { ErrorMessage } from "@/types/error-message"
 import apiClient from "@/utils/apiClient"
 import { File, Loader2, Upload } from 'lucide-react'
 import Image from "next/image"
@@ -80,7 +81,7 @@ export default function UploadPage() {
       setAnalysis(analysis);
       setStatus("Processing complete! 🎉");
     } catch (error) {
-      console.error('Error:', error.response.data.message)
+      console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
     }
   }
 

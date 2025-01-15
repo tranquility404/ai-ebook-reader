@@ -4,4 +4,5 @@ export interface Book {
     authors: string[]
     genre: string
     thumbnail: string
+    postedBy: string
   }

@@ -19,12 +19,8 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = login({ email, password })
-      if (response.status === 200) {
-        router.push('/')
-      } else {
-        console.error('Login failed')
-      }
+      login({ email, password })
+      router.push('/')
     } catch (error) {
       console.error('Error during login:', error)
     }
