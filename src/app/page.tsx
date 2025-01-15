@@ -2,15 +2,22 @@
 import CollectionBooks from '@/components/CollectionBooks'
 import Header from '@/components/Header'
 import LastReadBooks from '@/components/LastReadBooks'
+import RecentlyAddedBooks from '@/components/RecentlyAddedBooks'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import apiClient from '@/utils/apiClient'
-import { Upload } from 'lucide-react'
+import { Search, Upload } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function Home() {
 
+
+const Home = () => {
+  const router = useRouter()
   const [collectionBooks, setCollectionBooks] = useState([])
   const [lastReadBooks, setLastReadBooks] = useState([])
+  const [recentlyAddedBooks, setRecentlyAddedBooks] = useState([])
+  const [searchQuery, setSearchQuery] = useState<string>('')
   // Placeholder data (replace with actual data fetching logic)
   // const lastReadBooks = [
   //   {
@@ -41,19 +48,34 @@ export default function Home() {
         console.error('Error fetching collection books:', error)
       }
     };
+    
+    const fetchRecentlyUploadedBooks = async () => {
+      try {
+        const response = await apiClient.get('/book/recently-uploaded-books')
+        const books = response.data
+        setRecentlyAddedBooks(books)
+      } catch (error) {
+        console.error('Error fetching collection books:', error)
+      }
+    };
 
     fetchCollectionBooks();
     fetchLastReadBooks();
+    fetchRecentlyUploadedBooks();
   }, []);
 
-  // const collectionBooks = [
-  //   {
-  //     title: '1984',
-  //     author: 'George Orwell',
-  //     genre: 'Science Fiction',
-  //     thumbnail: '/placeholder.svg'
-  //   },
-  // ]
+  const handleUpload = () => {
+    router.push('/upload')
+  }
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    let query = searchQuery.trim()
+    if (searchQuery.length < 100) {
+      query = query.replace(/[^a-zA-Z0-9\s]/g, "")
+      router.push(`/search?q=${encodeURIComponent(query)}`)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,14 +83,28 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">Welcome to AI Ebook Reader</h1>
-          <a href="/upload" className="group">
-            <Button asChild>
-              <span>
+          <div className="flex gap-4">
+              <form onSubmit={handleSearch} className="relative">
+                <Input
+                  type="search"
+                  placeholder="Search books..."
+                  className="w-64"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Button 
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-0 top-0 h-full"
+                  type="submit"
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </form>
+              <Button onClick={handleUpload}>
                 <Upload className="mr-2 h-4 w-4" />
-                Add New Book
-              </span>
-            </Button>
-          </a>
+                Upload New Book
+              </Button>
+            </div>
         </div>
 
         <div className="grid grid-cols-1 gap-8">
@@ -87,9 +123,18 @@ export default function Home() {
               emptyText="Your collection is empty"
             />
           </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Recently Added by Community</h2>
+            <RecentlyAddedBooks
+              books={recentlyAddedBooks}
+              emptyText='No books have been added recently'
+            />
+          </section>
         </div>
       </main>
     </div>
   )
 }
 
+export default Home;

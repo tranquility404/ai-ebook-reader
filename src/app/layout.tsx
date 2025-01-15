@@ -1,12 +1,12 @@
 'use client'
 
+import ErrorBoundary from '@/components/ErrorBoundary'
 import LoadingScreen from '@/components/LoadingScreen'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
-import './globals.css'
-import ErrorBoundary from '@/components/ErrorBoundary'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import apiClient from '@/utils/apiClient'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import './globals.css'
 
 // export const metadata: Metadata = {
 //   title: 'Ebook Reader',

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -24,12 +24,27 @@ import {
 import { User, BookOpen, MessageSquare, LogOut, Sun, Moon } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useTheme } from 'next-themes'
+import apiClient from '@/utils/apiClient'
 
 export default function Header() {
   const { logout } = useAuth()
   const { theme, setTheme } = useTheme()
+  const [profilePicCloudUrl, setProfilePicCloudUrl] = useState('')
   const [showLogoutDialog, setShowLogoutDialog] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const fetchProfilePic = async () => {
+      try {
+      const res = await apiClient.get("/user/profile-picture");
+      setProfilePicCloudUrl(res.data)
+      } catch(error) {
+        console.log(error.response.message);
+      }
+    }
+
+    fetchProfilePic();
+  }, [])
 
   return (
     <>
@@ -42,7 +57,7 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
+                  <AvatarImage src={profilePicCloudUrl} alt="User" />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
               </Button>

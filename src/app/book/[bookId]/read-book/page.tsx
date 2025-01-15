@@ -25,6 +25,7 @@ function ReadBook({ bookId }: { bookId: string }) {
   const renditionRef = useRef<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const tocRef = useRef<any>(null)
+  const pageIndex = useRef<number>(0)
 
   useEffect(() => {
     if (bookId) {
@@ -32,7 +33,15 @@ function ReadBook({ bookId }: { bookId: string }) {
         setBook(data)
       })
     }
-  }, [bookId])
+
+    const id = setInterval(() => {
+      updateReadHistory(pageIndex.current)
+    }, 15000);
+
+    return () => {
+      clearInterval(id);
+    }
+  }, [])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -182,7 +191,7 @@ function ReadBook({ bookId }: { bookId: string }) {
               if (tocRef.current) { 
                 let pageIdx = tocRef.current[location.start.href]
                 if (!isNaN(pageIdx)) {
-                  updateReadHistory(pageIdx)
+                  pageIndex.current = pageIdx
                   setCurrentPage(pageIdx + 1)
                 }
               }

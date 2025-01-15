@@ -1,7 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -14,42 +13,48 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useToast } from "@/components/ui/use-toast"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import apiClient from '@/utils/apiClient'
 import { Pencil } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 interface UserProfile {
+  profilePicCloudUrl: string
   name: string
   email: string
   dob: string
   country: string
-  avatar: string
 }
 
 export default function ProfilePage() {
-  const router = useRouter()
   const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [profile, setProfile] = useState<UserProfile>({
-    name: 'John Doe',
-    email: 'john@example.com',
-    dob: '1990-01-01',
-    country: 'IN',
-    avatar: '/placeholder-avatar.jpg'
-  })
+  const [profile, setProfile] = useState<UserProfile>()
+  const fileInputRef = useRef(null);
+
+  const fetchUserInfo = async () => {
+    try {
+      const res = await apiClient.get("/user/user-info");
+      setProfile(res.data)
+    } catch(error) {
+      console.log(error.response.message);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserInfo();
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profile),
-      })
-
-      if (!response.ok) throw new Error('Failed to update profile')
+      const response = await apiClient.post('/user/user-info', {
+        name: profile?.name,
+        dob: profile?.dob,
+        country: profile?.country
+      });
 
       toast({
         title: "Profile updated",
@@ -68,7 +73,28 @@ export default function ProfilePage() {
     }
   }
 
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+
+    if (file && file.type.startsWith('image/')) {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      try {
+        const uploadResponse = await apiClient.post("/user/profile-picture", formData, {
+          headers: { "Content-Type": "multipart/form-data" }
+        });
+
+        const url = uploadResponse.data;
+        setProfile({ ...profile, profilePicCloudUrl: url })
+      } catch (error) {
+        console.error('Error:', error.response.data.message)
+      }
+    }
+  }
+
   return (
+    profile &&
     <div className="container max-w-2xl mx-auto px-4 py-8">
       <Card>
         <CardHeader className="space-y-1">
@@ -89,26 +115,37 @@ export default function ProfilePage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="flex justify-center">
-              <div className="relative">
-                <Avatar className="h-32 w-32">
-                  <AvatarImage src={profile.avatar} alt={profile.name} />
-                  <AvatarFallback>
-                    {profile.name.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                {isEditing && (
+                <div className="relative">
+                  <Avatar className="h-32 w-32">
+                    <AvatarImage src={profile.profilePicCloudUrl} alt={profile.name} />
+                    {profile.name &&
+                      <AvatarFallback>
+                        {profile.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    }
+                  </Avatar>
+                  {isEditing && (
                   <Button
                     size="icon"
                     variant="secondary"
                     className="absolute bottom-0 right-0 rounded-full"
                     type="button"
                     onClick={() => {
-                      // Implement avatar upload logic
+                      if (fileInputRef.current)
+                        fileInputRef.current.click()
                     }}
                   >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                )}
+                      <Pencil className="h-4 w-4" />
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        id="file-upload"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleFileSelect}
+                      />
+                    </Button>
+                  )}
               </div>
             </div>
 

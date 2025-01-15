@@ -81,33 +81,11 @@ export default function ChapterPage() {
     setIsGenerating(true)
     setSummaryText('')
 
-    // const words = sample.split(' ')
-    // let i = 0
-    // const id = setInterval(() => {
-    //   if (i < words.length) {
-    //     const text = words.slice(i, i + 3).join(' ')
-    //     setSummaryText(prev => prev + ' ' + text)
-    //     i++
-    //   }
-    // }, 1000);
-
-    // setTimeout(() => {
-    //   clearInterval(id);
-    // }, (words.length / 3) * 1000)
-
-    // const words = summaryText.split(' ')
-    // let i = 0
-    // while (i < words.length) {
-    //   const text = words.slice(i, i + 3).join(' ')
-    //   setSummaryText(prev => prev + text)
-    // }
-
     try {
       const response = await apiClient.post(`/ml/generate-summary`, {
         "bookId": bookId,
         "chapterHref": selectedChapter.href
       });
-      console.log(response.data);
       setSummaryText(response.data)
 
     } catch (error) {

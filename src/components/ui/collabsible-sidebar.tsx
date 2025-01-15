@@ -12,7 +12,7 @@ interface CollapsibleSidebarProps {
 }
 
 export function CollapsibleSidebar({ children, className }: CollapsibleSidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
   return (
     <div
