@@ -24,7 +24,7 @@ export default function ReadBook() {
   const [isFullScreen, setIsFullScreen] = useState(false)
   const renditionRef = useRef<Rendition>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const tocRef = useRef<{[x: string]: number}>({})
+  const tocRef = useRef<{[x: string]: number}>(null)
   const pageIndex = useRef<number>(0)
 
   useEffect(() => {
@@ -201,6 +201,8 @@ export default function ReadBook() {
             rendition.on('relocated', (location: Location) => {
               if (tocRef.current) { 
                 const pageIdx = tocRef.current[location.start.href]
+                console.log(pageIdx);
+                
                 if (!isNaN(pageIdx)) {
                   pageIndex.current = pageIdx
                   setCurrentPage(pageIdx + 1)
