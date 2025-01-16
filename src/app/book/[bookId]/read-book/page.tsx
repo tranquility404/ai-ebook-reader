@@ -14,7 +14,7 @@ const ReactReader = dynamic(() => import('react-reader').then((mod) => mod.React
 
 export default function ReadBook() {
   const { bookId } = useParams()
-  const [book, setBook] = useState<BookInfo>()
+  const [book, setBook] = useState<BookInfo|null>(null)
   const [location, setLocation] = useState<string | number>(0)
   const [totalPages, setTotalPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
@@ -35,6 +35,7 @@ export default function ReadBook() {
         const response = await apiClient.get(`/book/${bookId}`)
         const data = await response.data
         setBook(data)
+        setTotalPages(data.pageCount|0)
       } catch (error) {
         console.error('Error fetching book:', error)
       }
@@ -218,7 +219,6 @@ export default function ReadBook() {
             }
 
             tocRef.current = dict
-            setTotalPages(toc.length)
           }}
           epubOptions={{
             flow: 'paginated',
