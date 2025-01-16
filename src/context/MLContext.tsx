@@ -1,5 +1,6 @@
 import { ErrorMessage } from "@/types/error-message";
 import apiClient from "@/utils/apiClient";
+import axios from "axios";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface MLContextType {
@@ -15,7 +16,8 @@ export const MLProvider = ({ children }: { children: ReactNode }) => {
 
     const checkServer = async () => {
         try {
-          await apiClient.get("/ml/health-check");
+          // await apiClient.get("/ml/health-check");
+          await axios.get("https://ai-ebook-reader-ml-backend.onrender.com/health-check")
           setIsLoading(false);
         } catch (error) {
           console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
