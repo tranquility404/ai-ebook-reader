@@ -44,7 +44,7 @@ function QuizContent() {
   const [isReviewMode, setIsReviewMode] = useState(false)
   const [score, setScore] = useState({ total: 0, correct: 0, incorrect: 0 })
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(-1)
   const [questionStates, setQuestionStates] = useState<{ [key: number]: QuestionState }>({})
 
   useEffect(() => {
@@ -53,6 +53,7 @@ function QuizContent() {
         const response = await apiClient.get(`/ml/quiz/${quizId}`)
         const quizJson = JSON.parse(response.data)
         setQuestions(quizJson)
+        setCurrentQuestionIndex(0)
 
       } catch (error) {
         console.error('Error:', (error as ErrorMessage)?.response?.message || "An unknown error occurred")
@@ -151,7 +152,7 @@ function QuizContent() {
   }
 
   return (
-    questions &&
+    questions && currentQuestionIndex > -1 &&
     <div className="flex h-screen">
       <CollapsibleSidebar>
         <div className="space-y-6">
