@@ -1,5 +1,4 @@
 import { ErrorMessage } from "@/types/error-message";
-import apiClient from "@/utils/apiClient";
 import axios from "axios";
 import { createContext, ReactNode, useContext, useState } from "react";
 
