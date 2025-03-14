@@ -68,6 +68,7 @@ function ChaptersPage() {
 
     const generateSummary = async () => {
         if (!selectedChapter || !bookId) return;
+        setSummaryText('')
         setShowSummarySheet(true);
 
         // setIsGenerating(true);
