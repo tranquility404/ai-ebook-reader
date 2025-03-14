@@ -2,12 +2,12 @@ import {
     Box,
     Heading,
     Image,
-    LinkOverlay,
     Progress,
     SimpleGrid,
     Text,
     VStack
 } from '@chakra-ui/react'
+import { Link } from 'react-router-dom'
 import { useColorModeValue } from './ui/color-mode'
 
 interface Book {
@@ -35,14 +35,18 @@ export default function LastReadBooks({ books, emptyText }: LastReadBooksProps) 
     return (
         <SimpleGrid columns={{ base: 2, md: 3, lg: 4, xl: 5 }} gap={4}>
             {books.map((book) => (
-                <LinkOverlay
-                    href={`/books/${book.id}/reader`}
+                <Link
                     key={book.id}
-                    position="relative"
-                    borderRadius="lg"
-                    overflow="hidden"
-                    boxShadow="md">
-                    <Box position="relative" height="0" paddingBottom="133%" /* 4:3 aspect ratio */>
+                    to={`/books/${book.id}/reader`}>
+                    <Box
+                        borderRadius="lg"
+                        overflow="hidden"
+                        boxShadow="md"
+
+                        position="relative"
+                        height="0"
+                        paddingBottom="133%" /* 4:3 aspect ratio */
+                    >
                         <Image
                             src={book.thumbnail}
                             alt={book.title}
@@ -99,7 +103,7 @@ export default function LastReadBooks({ books, emptyText }: LastReadBooksProps) 
                             </VStack>
                         </Box>
                     </Box>
-                </LinkOverlay>
+                </Link>
             ))}
         </SimpleGrid>
     )

@@ -7,7 +7,6 @@ import { AuthProvider } from "./context/AuthContext"
 // import ErrorPage from "./pages/ErrorPage"
 import LoadingPage from "./pages/LoadingPage"
 import WakeUpServerLoadingPage from "./pages/WakeUpServerLoadingPage"
-import MLRoute from "./routes/MLRoute"
 // import ProtectedRoute from ""
 
 // ✅ Lazy-loaded pages
@@ -78,11 +77,11 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/upload" element={<UploadPage />} />
 
-            <Route element={<MLRoute />}>
-
+            <Route path="/books/:bookId/chapters" element={<ChaptersPage />} />
+            
+            {/* <Route element={<MLRoute />}>
               <Route path="/books/:bookId/chapters" element={<ChaptersPage />} />
-
-            </Route>
+            </Route> */}
           </Route>
 
         </Routes>

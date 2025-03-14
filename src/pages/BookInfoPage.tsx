@@ -10,14 +10,13 @@ import {
   Grid,
   Heading,
   Image,
-  LinkOverlay,
   SimpleGrid,
   Text,
   VStack
 } from '@chakra-ui/react';
 import { BookOpen, Flag, Sparkles, ThumbsUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 interface BookInfo {
   id: string;
@@ -158,7 +157,7 @@ export default function BookInfoPage() {
               variant="outline"
               h="auto"
               p={0}>
-              <LinkOverlay href={`${bookId}/reader`}>
+              <Link to={`reader`} style={{width: "100%", height: "100%"}}>
                 <Flex
                   flexDirection="column"
                   alignItems="center"
@@ -169,7 +168,7 @@ export default function BookInfoPage() {
                   <BookOpen size={20} />
                   <Text>Read Book</Text>
                 </Flex>
-              </LinkOverlay>
+              </Link>
             </Button>
 
             <Button
@@ -177,7 +176,7 @@ export default function BookInfoPage() {
               h="auto"
               p={0}
             >
-              <LinkOverlay href={`${bookId}/chapters`}>
+              <Link to={`chapters`} style={{width: "100%", height: "100%"}}>
                 <Flex
                   flexDirection="column"
                   alignItems="center"
@@ -188,7 +187,7 @@ export default function BookInfoPage() {
                   <Sparkles size={20} />
                   <Text>AI Features</Text>
                 </Flex>
-              </LinkOverlay>
+              </Link>
             </Button>
 
             <Button variant="outline" h="auto" py={4}>
