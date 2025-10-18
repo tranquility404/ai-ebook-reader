@@ -48,9 +48,6 @@ function App() {
 
             <Route path="/books/:bookId/chapters" element={<ChaptersPage />} />
             
-            {/* <Route element={<MLRoute />}>
-              <Route path="/books/:bookId/chapters" element={<ChaptersPage />} />
-            </Route> */}
           </Route>
 
         </Routes>
@@ -60,29 +57,3 @@ function App() {
 }
 
 export default App
-
-{/* <Route index element={<HomePage />} /> */ }
-
-// <ErrorPage errorCode={404} errorMessage="Internal Server Error"/>
-
-{/* <Route element={
-              <AuthProvider>
-                <Outlet />
-              </AuthProvider>
-            }>
-              <Route path='/register' element={<RegisterPage />} />
-              <Route path='/login' element={<LoginPage />} />
-
-            </Route> */}
-
-{/* <Route path='/login' element={
-              <AuthProvider>
-                <LoginPage />
-              </AuthProvider>
-            } />
-
-            <Route path='/register' element={
-              <AuthProvider>
-                <RegisterPage />
-              </AuthProvider>
-            } /> */}
