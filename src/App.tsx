@@ -9,6 +9,7 @@ import LoadingPage from "./pages/LoadingPage"
 
 // ✅ Lazy-loaded pages
 const ProtectedRoute = lazy(() => import("./routes/ProtectedRoute"));
+const LoginRoute = lazy(() => import("./routes/LoginRoute"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const RegisterPage = lazy(() => import("./pages/Auth/RegisterPage"));
@@ -33,6 +34,10 @@ function App() {
             <AuthProvider>
               <RegisterPage />
             </AuthProvider>
+          } />
+
+          <Route path='/login' element={
+            <LoginRoute />
           } />
 
           <Route element={<ProtectedRoute />}>

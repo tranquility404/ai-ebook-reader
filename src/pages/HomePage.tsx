@@ -20,11 +20,55 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiAuthClient from '../api/apiClient'
 
+interface CollectionBook {
+  id: string
+  title: string
+  thumbnail: string
+  genre: string
+}
+
+interface LastReadBook {
+  id: string
+  title: string
+  thumbnail: string
+  progress: number
+}
+
+interface RecentlyAddedBook {
+  id: string
+  title: string
+  thumbnail: string
+  postedBy: string
+  addedAt: string
+}
+
+const getBooksFromResponse = <T,>(payload: unknown): T[] => {
+  if (Array.isArray(payload)) {
+    return payload as T[]
+  }
+
+  if (payload && typeof payload === 'object') {
+    const response = payload as {
+      books?: unknown
+      data?: unknown
+      items?: unknown
+    }
+
+    for (const value of [response.books, response.data, response.items]) {
+      if (Array.isArray(value)) {
+        return value as T[]
+      }
+    }
+  }
+
+  return []
+}
+
 const HomePage = () => {
   const navigate = useNavigate()
-  const [collectionBooks, setCollectionBooks] = useState([])
-  const [lastReadBooks, setLastReadBooks] = useState([])
-  const [recentlyAddedBooks, setRecentlyAddedBooks] = useState([])
+  const [collectionBooks, setCollectionBooks] = useState<CollectionBook[]>([])
+  const [lastReadBooks, setLastReadBooks] = useState<LastReadBook[]>([])
+  const [recentlyAddedBooks, setRecentlyAddedBooks] = useState<RecentlyAddedBook[]>([])
   const [searchQuery, setSearchQuery] = useState<string>('')
 
   const bgColor = useColorModeValue('white', 'gray.800')
@@ -33,7 +77,7 @@ const HomePage = () => {
     const fetchCollectionBooks = async () => {
       try {
         const response = await apiAuthClient.get('/books/my-collection')
-        const books = response.data
+        const books = getBooksFromResponse<CollectionBook>(response.data)
         setCollectionBooks(books)
       } catch (error) {
         console.error('Error fetching collection books:', error)
@@ -43,7 +87,7 @@ const HomePage = () => {
     const fetchLastReadBooks = async () => {
       try {
         const response = await apiAuthClient.get('/books/last-read-books')
-        const books = response.data
+        const books = getBooksFromResponse<LastReadBook>(response.data)
         setLastReadBooks(books)
       } catch (error) {
         console.error('Error fetching collection books:', error)
@@ -53,7 +97,7 @@ const HomePage = () => {
     const fetchRecentlyUploadedBooks = async () => {
       try {
         const response = await apiAuthClient.get('/books/recently-uploaded-books')
-        const books = response.data
+        const books = getBooksFromResponse<RecentlyAddedBook>(response.data)
         setRecentlyAddedBooks(books)
       } catch (error) {
         console.error('Error fetching collection books:', error)

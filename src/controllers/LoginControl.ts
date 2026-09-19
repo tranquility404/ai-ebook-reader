@@ -2,14 +2,14 @@ import { login, register } from "@/api/ApiRequests";
 import { useAuthStatusStore } from "@/store/globalStates";
 
 export const useAuthHelper = () => {
-    const { isAuthenticated, setIsAuthenticated } = useAuthStatusStore();
+    const { authStatus, setAuthStatus } = useAuthStatusStore();
 
     const initiateRegistration = async (firstName: string, lastName: string, email: string, password: string, navigate: any) => {
         const res = await register({ firstName, lastName, email, password });
 
         if (res.status == 200) {
             localStorage.setItem("auth-token", res.data); // Store token
-            setIsAuthenticated(true);
+            setAuthStatus("authenticated");
             navigate("/");
             console.log("register success");
         }
@@ -22,7 +22,7 @@ export const useAuthHelper = () => {
 
         if (res.status == 200) {
             localStorage.setItem("auth-token", res.data); // Store token
-            setIsAuthenticated(true);
+            setAuthStatus("authenticated");
             navigate("/");
             console.log("login success");
         }
@@ -32,11 +32,11 @@ export const useAuthHelper = () => {
 
     const logout = () => {
         localStorage.removeItem("auth-token");
-        setIsAuthenticated(false);
+        setAuthStatus("unauthenticated");
     };
 
     return {
-        isAuthenticated,
+        isAuthenticated: authStatus === "authenticated",
         initiateLogin,
         initiateRegistration,
         logout

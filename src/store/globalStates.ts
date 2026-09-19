@@ -2,14 +2,14 @@ import { create } from "zustand";
 
 // create state shape
 interface AuthStatusState {
-    isAuthenticated: boolean;
-    setIsAuthenticated: (isAuthenticated: boolean) => void;
+    authStatus: 'checking' | 'authenticated' | 'unauthenticated';
+    setAuthStatus: (authStatus: AuthStatusState['authStatus']) => void;
 }
 
 // Create the store
 export const useAuthStatusStore = create<AuthStatusState>((set) => ({
-    isAuthenticated: true,
-    setIsAuthenticated: (authStatus) => set({ isAuthenticated: authStatus }),
+    authStatus: 'checking',
+    setAuthStatus: (authStatus) => set({ authStatus }),
 }));
 
 

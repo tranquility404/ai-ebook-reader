@@ -1,40 +1,28 @@
-import { checkUserAuthStatus } from '@/api/ApiRequests';
-import { AuthProvider } from '@/context/AuthContext';
-import LoginPage from '@/pages/Auth/LoginPage';
 import { useAuthStatusStore } from '@/store/globalStates';
 import { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import LoadingPage from '@/pages/LoadingPage';
 
 const ProtectedRoute = () => {
-  const isAuthenticated = useAuthStatusStore((state) => state.isAuthenticated);
-  const setIsAuthenticated = useAuthStatusStore((state) => state.setIsAuthenticated);
-
-  const checkAuthStatus = async () => {
-    try {
-      const res = await checkUserAuthStatus();
-      setIsAuthenticated(res.status == 200);
-    } catch (err) {
-      setIsAuthenticated(false);
-    }
-  };
+  const authStatus = useAuthStatusStore((state) => state.authStatus);
+  const setAuthStatus = useAuthStatusStore((state) => state.setAuthStatus);
 
   useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
+    const token = localStorage.getItem('auth-token');
+    setAuthStatus(token ? 'authenticated' : 'unauthenticated');
+  }, [setAuthStatus]);
 
   return (
     <>
-      {/* auth-status: {isAuthenticated.toString()} */}
-      {
-      isAuthenticated ? <Outlet /> : 
-      <AuthProvider>
-        <LoginPage />
-
-      </AuthProvider>
-      }
+      {authStatus === 'checking' ? (
+        <LoadingPage />
+      ) : authStatus === 'authenticated' ? (
+        <Outlet />
+      ) : (
+        <Navigate to="/login" replace />
+      )}
     </>
-  )
+  );
 };
 
 export default ProtectedRoute;
