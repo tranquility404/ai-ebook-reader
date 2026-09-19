@@ -1,6 +1,25 @@
 
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { Readable } from "node:stream";
+type ProxyRequest = {
+  method?: string;
+  url?: string;
+  query: {
+    path?: string | string[];
+  };
+  headers: Record<string, string | string[] | undefined>;
+};
+
+type ProxyResponse = {
+  status: (statusCode: number) => ProxyResponse;
+  json: (body: unknown) => unknown;
+  setHeader: (name: string, value: string) => void;
+  send: (body: Uint8Array) => unknown;
+};
+
+type RuntimeEnvironment = typeof globalThis & {
+  process?: {
+    env?: Record<string, string | undefined>;
+  };
+};
 
 export const config = {
   api: {
@@ -9,11 +28,12 @@ export const config = {
 };
 
 export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
+  req: ProxyRequest,
+  res: ProxyResponse
 ) {
   try {
-    const backendUrl = process.env.BACKEND_URL;
+    const backendUrl = (globalThis as RuntimeEnvironment).process?.env
+      ?.BACKEND_URL;
 
     if (!backendUrl) {
       return res.status(500).json({
@@ -52,7 +72,7 @@ export default async function handler(
       method: req.method,
       headers,
       body: hasBody
-        ? (Readable.toWeb(req) as unknown as BodyInit)
+        ? (req as unknown as BodyInit)
         : undefined,
       // Required when streaming the incoming request body.
       duplex: "half",
@@ -69,11 +89,9 @@ export default async function handler(
       }
     });
 
-    const responseBuffer = Buffer.from(
-      await response.arrayBuffer()
-    );
+    const responseBody = new Uint8Array(await response.arrayBuffer());
 
-    return res.send(responseBuffer);
+    return res.send(responseBody);
   } catch (error) {
     console.error("Proxy error:", error);
 
